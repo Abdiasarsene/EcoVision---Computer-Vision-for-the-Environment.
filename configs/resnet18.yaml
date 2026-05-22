@@ -1,0 +1,19 @@
+model:
+  name: resnet18
+  num_classes: 6
+
+training:
+  batch_size: 32
+  epochs: 10
+  learning_rate: 0.001
+  optimizer: Adam
+  loss: CrossEntropyLoss
+
+data:
+  train_dir: ../dataset-resized
+  val_split: 0.3
+  img_size: 224
+  augmentations:
+    horizontal_flip: true
+    rotation: 15
+    color_jitter: true
