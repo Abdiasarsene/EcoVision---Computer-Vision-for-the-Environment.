@@ -25,9 +25,11 @@ def get_dataloaders(data_dir=settings.data, batch_size=32):
     test_size = len(waste_image) - train_size
     train_data, test_data = random_split(waste_image, [train_size, test_size])
 
+    # Transform
     train_data.dataset.transform = transform_train
     test_data.dataset.transform = transform_test
 
+    # Data Loader
     train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(test_data, batch_size=batch_size)
     

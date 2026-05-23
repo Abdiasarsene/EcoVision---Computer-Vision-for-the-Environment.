@@ -6,7 +6,7 @@ import torch.nn.functional as F
 import matplotlib.pyplot as plt 
 from utils.config import settings
 
-weights_path=settings.resnet_waste_pth
+weights_path=settings.resnet_model
 classes= settings.classes
 model = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
 model.fc = nn.Linear(model.fc.in_features, len(classes))
