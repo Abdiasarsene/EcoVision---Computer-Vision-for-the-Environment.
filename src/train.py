@@ -1,11 +1,12 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
-from data_loader import get_dataloaders
-from model import build_resnet18
-from evaluate import evaluate
+from src.data_loader import get_dataloaders
+from src.model import build_resnet18
+from src.evaluate import evaluate
+from utils.config import settings
 
-def train_model(data_dir="../dataset-resized", epochs=5, lr=1e-4, save_path="../models_savior/resnet18_waste.pth"):
+def train_model(data_dir=settings.data, epochs=5, lr=1e-4, save_path=settings.resnet_model):
     train_loader, test_loader, classes = get_dataloaders(data_dir)
     model = build_resnet18(num_classes=len(classes))
 
@@ -33,8 +34,9 @@ def train_model(data_dir="../dataset-resized", epochs=5, lr=1e-4, save_path="../
     torch.onnx.export(
         model, 
         dummy_input, 
-        "../models_savior/resnet18_waste.onnx",
-        input_names=["input"], output_names=["output"],
+        settings.resnet_onnx_model,
+        input_names=["input"], 
+        output_names=["output"],
         dynamic_axes={"input": {0: "batch_size"}, "output": {0: "batch_size"}},
         opset_version=11
     )

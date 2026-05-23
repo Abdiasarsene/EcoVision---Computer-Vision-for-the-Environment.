@@ -16,5 +16,5 @@ if __name__ == "__main__":
     )
 
     # Exemple d’inférence
-    classes = ["cardboard", "glass", "metal", "paper", "plastic", "trash"]
+    classes=['cardboard', 'glass', 'metal', 'paper', 'plastic', 'trash']
     print("Prediction:", predict("data/test/trash.jpeg", "models/resnet18_waste.pth", classes))

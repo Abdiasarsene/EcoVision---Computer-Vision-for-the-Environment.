@@ -10,7 +10,7 @@ training:
   loss: CrossEntropyLoss
 
 data:
-  train_dir: ../dataset-resized
+  train_dir: ./data/dataset-resized
   val_split: 0.3
   img_size: 224
   augmentations:

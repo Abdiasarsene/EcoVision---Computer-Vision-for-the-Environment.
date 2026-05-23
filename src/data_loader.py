@@ -1,8 +1,9 @@
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader, random_split
+from utils.config import settings
 
-def get_dataloaders(data_dir="../dataset-resized", batch_size=32):
-    # Transformations
+def get_dataloaders(data_dir=settings.data, batch_size=32):
+    # Data Augmentation
     transform_train = transforms.Compose([
         transforms.RandomHorizontalFlip(),
         transforms.RandomRotation(15),
@@ -29,5 +30,7 @@ def get_dataloaders(data_dir="../dataset-resized", batch_size=32):
 
     train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
     test_loader = DataLoader(test_data, batch_size=batch_size)
+    
+    classes=waste_image.classes
 
-    return train_loader, test_loader, waste_image.classes
+    return train_loader, test_loader, classes

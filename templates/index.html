@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>EcoVision - Classification des déchets</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>EcoVision</h1>
+        <p>Upload une image pour prédire la catégorie de déchet et voir la zone regardée par le modèle (Grad-CAM).</p>
+
+        <form method="POST" enctype="multipart/form-data" class="upload-form">
+            <input type="file" name="image" accept="image/*" required>
+            <button type="submit">Prédire</button>
+        </form>
+
+        {% if prediction %}
+            <div class="result">
+                <h2>Résultat : <span>{{ prediction }}</span></h2>
+            </div>
+        {% endif %}
+
+        {% if gradcam_img %}
+            <div class="gradcam">
+                <h3>Explicabilité (Grad-CAM)</h3>
+                <img src="{{ gradcam_img }}" alt="Grad-CAM">
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

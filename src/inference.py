@@ -1,9 +1,10 @@
 import torch
 from torchvision import transforms
 from PIL import Image
-from model import build_resnet18
+from src.model import build_resnet18
+from utils.config import settings
 
-def predict(img_path, weights_path="../models_savior/resnet18_waste.pth", classes=None):
+def predict(img_path, weights_path=settings.resnet_model, classes=None):
     transform = transforms.Compose([
         transforms.Resize((224,224)),
         transforms.ToTensor(),
