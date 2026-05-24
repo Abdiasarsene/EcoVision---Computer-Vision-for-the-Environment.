@@ -6,16 +6,19 @@ import torch.nn.functional as F
 import matplotlib.pyplot as plt 
 from utils.config import settings
 
-weights_path=settings.resnet_model
-classes= settings.classes
+weights_path=settings.resnet_waste_pth
+classes=['cardboard', 'glass', 'metal', 'paper', 'plastic', 'trash']
+# classes= settings.classes
 model = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
 model.fc = nn.Linear(model.fc.in_features, len(classes))
 model.load_state_dict(torch.load(weights_path, map_location="cpu"))
 model.eval()
 
+classes=['cardboard', 'glass', 'metal', 'paper', 'plastic', 'trash']
+
 def gradcam(model, img_tensor, target_layer, classes, pred_class):
     activations = None
-    gradients= None
+    gradients = None
     
     def save_activation(module, input, output):
         nonlocal activations
@@ -25,25 +28,34 @@ def gradcam(model, img_tensor, target_layer, classes, pred_class):
         nonlocal gradients
         gradients = grad_out[0]
         
-    # Hook
+    # Hooks
     target_layer.register_forward_hook(save_activation)
-    target_layer.register_forward_hook(save_gradient)
+    target_layer.register_backward_hook(save_gradient)
     
     # Forward + Backward
-    output  =model(img_tensor)
+    output = model(img_tensor)
     class_score = output[0, pred_class]
     model.zero_grad()
     class_score.backward()
     
-    # Grad-CAM
-    weights = gradients.mean(dim=(2,3), keepdim=True)
-    gradcam = (weights * activations).sum(dim=1).squeeze()
-    gradcam = F.relu(gradcam)
+    # Vérification
+    print("Activations shape:", activations.shape)
+    print("Gradients shape:", gradients.shape)
     
+    # Grad-CAM
+    if gradients.dim() == 4:
+        weights = gradients.mean(dim=(2,3), keepdim=True)
+        gradcam = (weights * activations).sum(dim=1).squeeze()
+    else:
+        weights = gradients.mean(dim=0, keepdim=True)
+        gradcam = (weights * activations).sum(dim=1).squeeze()
+    
+    gradcam = F.relu(gradcam)
     gradcam = gradcam.cpu().detach().numpy()
-    gradcam = (gradcam - gradcam.min()) / (gradcam/max() - gradcam.min())
+    gradcam = (gradcam - gradcam.min()) / (gradcam.max() - gradcam.min())
     
     return gradcam
+
 
 import cv2
 import numpy as np
